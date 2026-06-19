@@ -27,4 +27,22 @@ def show_users():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    from flask import Flask, request, jsonify
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    
+    data = request.json
+    username = data['username']
+    email = data['email']
+    password = data['password'] 
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, password))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+    return jsonify({"message": "User registered successfully!"})
    
