@@ -45,4 +45,20 @@ def signup():
     conn.close()
     
     return jsonify({"message": "User registered successfully!"})
-   
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data['email']
+    password = data['password']
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if user:
+        return jsonify({"message": "Login successful!"})
+    else:
+        return jsonify({"message": "Invalid credentials"}), 401
